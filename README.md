@@ -2,13 +2,21 @@
 
 Topics covered in DTI processing:
 1. Preparation for DTI processing, including
-  1. Eddy current correction
-  2. Brain extraction
+  i. Eddy current correction
+  ii. Brain extraction
 2. Connectivity matrices
+3. Tractography
+4. Calculating ROI Intensity
 
 ## Getting Started
 
 ### Prerequisites
+
+When logging into the server, specify the following tags to be able to use FSLView:
+
+```
+ssh <user>@<server> -taY -X
+```
 
 For ease of use (to not have to load required modules on every login), I would recommend adding the following to your ~/.bashrc file:
 
@@ -23,12 +31,6 @@ module load camino-trackvis/0.2.8.1
 export CAMINO_HEAP_SIZE=15000
 export FSLDIR=/hpf/tools/centos6/fsl/5.0.6/
 . ${FSLDIR}/etc/fslconf/fsl.sh
-```
-
-When logging into the server, specify the following tags to be able to use FSLView
-
-```
-ssh <user>@<server> -taY -X
 ```
 
 For a lot of the steps, you need an atlas for the brain, with identified regions of interests (ROIs). For example, I used the [AAL atlas](http://www.gin.cnrs.fr/en/tools/aal-aal2/).
@@ -66,7 +68,7 @@ You can either run dcm2nii on the entire Patient1 folder, and then separate the 
 
 ## Using the Scripts
 
-And what they do - very important, you know.
+(And what they do - very important, you know).
 
 ### Preprocessing
 
@@ -79,6 +81,9 @@ sh preprocessing.sh
 This will, for each b-value folder, correct the DTI image for eddy current distortion, flaws in the image due to the varying magnetic field inducing an electric current. It will also isolate the brain from the rest of the skull. Furthermore, this will fit the diffusion tensor to the image. FA images and MD images will also be generated.
 
 ### Registration
+
+Change the 'atlas' variable to point to the location of your atlas NIfTI file, the one with labelled ROIs.
+Change the 'mni' variable to point to the location of your standardized MNI brain image.
 
 Similar to the preprocessing step, run the script in the uppermost level of your patient (the Patient1 folder):
 
@@ -113,6 +118,10 @@ sh tractography.sh
 Then Camino is utilized to create tractography files that can be viewed using Paraview (allTracts.vtk). TrackVis is another tool that can be used to visualize the tractography files, but I had less luck with the files actually appearing (maybe it was being overloaded with data, not sure) - the track of interest for this program would be allTracts.trk:
 
 ### ROI
+
+Change the 'atlas' variable to point to the location of your atlas NIfTI file, the one with labelled ROIs.
+Change the 'atlas_text' variable to point to the location of the list of ROIs. The file that I used had three columns: abbreviated ROI name, ROI name, and intensity of each labelled ROI.
+Change the 'mni' variable to point to the location of your standardized MNI brain image.
 
 DTI images are created (using FSL's dtifit tool) and calculated (RD, AD images). A helpful site that explained the difference between FA, RD, MD, and AD was [Diffusion Imaging](http://www.diffusion-imaging.com/2013/01/relation-between-neural-microstructure.html). 
 

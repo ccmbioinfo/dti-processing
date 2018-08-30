@@ -1,4 +1,5 @@
 #!/bin/bash
+
 atlas=/hpf/projects/brudno/data/language/atlas-aal/ROI_MNI_V5.nii
 atlas_text=/hpf/projects/brudno/data/language/atlas-aal/ROI_MNI_V5.txt
 mni=$FSLDIR/data/standard/MNI152_T1_2mm_brain.nii.gz
